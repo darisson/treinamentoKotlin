@@ -8,11 +8,16 @@ import com.example.darisson.treinamentokotlin.R
 import com.example.darisson.treinamentokotlin.modules.business.ContatoBusiness
 import com.example.darisson.treinamentokotlin.modules.database.ContatoDatabase
 import com.example.darisson.treinamentokotlin.modules.model.Contato
-import com.example.darisson.treinamentokotlin.modules.view.activity.ContatosActivity.Companion.ID_CONTATO
-import com.example.darisson.treinamentokotlin.modules.view.activity.ContatosActivity.Companion.IS_EDIT
+import com.example.darisson.treinamentokotlin.modules.view.activity.DetalhesContatoActivity.Companion.CONTATO_ID_EXTRA
 import kotlinx.android.synthetic.main.activity_contato_novo.*
 
 class NovoContatoActivity : BaseActivity() {
+
+    companion object {
+
+        const val IS_EDIT: String = "IS_EDIT"
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_contato_novo)
@@ -24,11 +29,12 @@ class NovoContatoActivity : BaseActivity() {
         if (isEdit) {
 
             btnNovoContato.setText(R.string.alterar)
-            val id: Int = intent.extras.getInt(ID_CONTATO)
+            val id: Int = intent.extras.getInt(CONTATO_ID_EXTRA)
             getContatoById(id)?.let { onEditClick(it) }
 
         } else onAddClick()
     }
+
     private fun onAddClick() {
 
         btnNovoContato.setOnClickListener {
@@ -70,6 +76,7 @@ class NovoContatoActivity : BaseActivity() {
         }
     }
 
+    // TODO: nao precisa criar uma extension para fazer o bind do contato
     private fun Contato.preencherContato() {
 
         name = editNomeContato.text.toString()

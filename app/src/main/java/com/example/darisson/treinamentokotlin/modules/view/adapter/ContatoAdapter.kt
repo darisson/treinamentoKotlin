@@ -12,10 +12,10 @@ import com.example.darisson.treinamentokotlin.R
 import com.example.darisson.treinamentokotlin.modules.business.ContatoBusiness
 import com.example.darisson.treinamentokotlin.modules.database.ContatoDatabase
 import com.example.darisson.treinamentokotlin.modules.model.Contato
-import com.example.darisson.treinamentokotlin.modules.view.activity.ContatosActivity.Companion.ID_CONTATO
-import com.example.darisson.treinamentokotlin.modules.view.activity.ContatosActivity.Companion.IS_EDIT
 import com.example.darisson.treinamentokotlin.modules.view.activity.DetalhesContatoActivity
+import com.example.darisson.treinamentokotlin.modules.view.activity.DetalhesContatoActivity.Companion.CONTATO_ID_EXTRA
 import com.example.darisson.treinamentokotlin.modules.view.activity.NovoContatoActivity
+import com.example.darisson.treinamentokotlin.modules.view.activity.NovoContatoActivity.Companion.IS_EDIT
 import com.example.darisson.treinamentokotlin.modules.view.item.ContatoItemView
 
 class ContatoAdapter {
@@ -42,11 +42,12 @@ class ContatoAdapter {
             onLongClick(contatoItemView, id)
         }
 
+        // TODO: passar configuracao da view holder para detro da viewholder
         private fun onClick(holder: ContatoItemView, id: Int?) {
             holder.itemView.setOnClickListener {
 
                 val intent = Intent(context, DetalhesContatoActivity::class.java)
-                intent.putExtra(ID_CONTATO, id)
+                intent.putExtra(CONTATO_ID_EXTRA, id)
                 context.startActivity(intent)
             }
         }
@@ -74,7 +75,7 @@ class ContatoAdapter {
             if (id != null) {
 
                 val intent = Intent(context, NovoContatoActivity::class.java)
-                intent.putExtra(ID_CONTATO, id)
+                intent.putExtra(CONTATO_ID_EXTRA, id)
                 intent.putExtra(IS_EDIT, true)
                 context.startActivity(intent)
             }

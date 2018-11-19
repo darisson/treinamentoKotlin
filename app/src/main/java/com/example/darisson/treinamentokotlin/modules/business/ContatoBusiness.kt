@@ -7,34 +7,43 @@ import com.example.darisson.treinamentokotlin.modules.model.Contato
 import com.example.darisson.treinamentokotlin.modules.network.contatos.ContatoNetwork
 
 object ContatoBusiness {
-    fun listarContatos(onSuccess: () -> Unit, onError: (msg: Int) -> Unit) {
 
+    fun listarContatos(
+            onSuccess: () -> Unit,
+            onError: (msg: Int) -> Unit
+    ) {
         val usuario = AutenticacaoDatabase.getUsuario()
 
         usuario?.let {
 
             ContatoDatabase.apagarContatos()
-            ContatoNetwork.listarContatos(usuario, { contatos ->
-                ContatoDatabase.salvarContatos(contatos) {
-                    onSuccess()
-                }
-            }, {
-                onError(R.string.erro_listar_contatos)
+            ContatoNetwork.listarContatos(usuario,
+                    onSuccess = { contatos ->
+                        ContatoDatabase.salvarContatos(contatos)
+                        onSuccess()
+            },
+                    onError = {
+                        onError(R.string.erro_listar_contatos)
             })
         }
     }
 
-    fun apagarContato(id: Int, onSuccess: () -> Unit, onError: (msg: Int) -> Unit) {
+    fun apagarContato(
+            id: Int, onSuccess: () -> Unit,
+            onError: (msg: Int) -> Unit
+    ) {
 
         val usuario = AutenticacaoDatabase.getUsuario()
 
         usuario?.let {
 
-            ContatoNetwork.apagarContato(usuario, id, {
-                ContatoDatabase.apagarContato(id)
-                onSuccess()
-            }, {
-                onError(R.string.erro_apagar_contato)
+            ContatoNetwork.apagarContato(usuario, id,
+                    onSuccess = {
+                        ContatoDatabase.apagarContato(id)
+                        onSuccess()
+            },
+                    onError = {
+                        onError(R.string.erro_apagar_contato)
             })
         }
     }
@@ -44,14 +53,15 @@ object ContatoBusiness {
         val usuario = AutenticacaoDatabase.getUsuario()
 
         usuario?.let {
-            ContatoNetwork.criarContato(usuario, contato, {
-                contato.let {
-                    ContatoDatabase.salvarContato(it) {
-                        onSuccess()
-                    }
+            ContatoNetwork.criarContato(usuario, contato,
+                    onSuccess = {
+                        contato.let{
+                            ContatoDatabase.salvarContato(it)
+                            onSuccess()
                 }
-            }, {
-                onError(R.string.erro_salvar_contato)
+            },
+                    onError = {
+                        onError(R.string.erro_salvar_contato)
             })
         }
     }
@@ -62,12 +72,14 @@ object ContatoBusiness {
 
         usuario?.let {
 
-            ContatoNetwork.editarContato(usuario, contato, id, { contato ->
-                ContatoDatabase.editarContato(contato) {
-                    onSuccess()
-                }
-            }, {
-                onError(R.string.erro_editar_contato)
+            ContatoNetwork.editarContato(usuario, contato, id,
+                    onSuccess = { contato ->
+                        ContatoDatabase.salvarContato(contato)
+                        onSuccess()
+
+            },
+                    onError = {
+                        onError(R.string.erro_editar_contato)
             })
         }
     }

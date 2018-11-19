@@ -1,61 +1,71 @@
 package com.example.darisson.treinamentokotlin.modules.network.auth
 
+import com.example.darisson.treinamentokotlin.modules.model.Data
 import com.example.darisson.treinamentokotlin.modules.model.Usuario
+import com.example.darisson.treinamentokotlin.modules.model.UsuarioWrapper
+import com.example.darisson.treinamentokotlin.modules.network.BaseNetwork
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import retrofit2.Retrofit
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
-import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.Response
 
-object AutenticacaoNetwork {
+object AutenticacaoNetwork : BaseNetwork(){
 
     val autenticacaoAPI by lazy {
         getRetrofit().create(AutenticacaoAPI::class.java)
     }
 
-    private fun getRetrofit(): Retrofit{
+    fun entrar(
+            usuario: UsuarioWrapper,
+            onSuccess: (response: Response<Data<Usuario>>) -> Unit,
+            onError: () -> Unit
+    ){
 
-        return Retrofit.Builder()
-                .baseUrl("https://api-agenda-unifor.herokuapp.com/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .build()
-    }
-
-    fun entrar(usuario: Usuario, onSucess: (usuario: Usuario) -> Unit, onError: () -> Unit){
         autenticacaoAPI.entrar(usuario)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ response ->
-
-                    val user = response.body()?.data
-                    user?.let {
-
-                        it.accessToken = response.headers()["access-token"]
-                        it.uid = response.headers()["uid"]
-                        it.client = response.headers()["client"]
-                        onSucess(it)
-                    }
-                }, {
-                    onError()
-                })
+                .subscribe(
+                        { response ->
+                            if (response.isSuccessful) {
+                                onSuccess(response)
+                            } else {
+                                onError()
+                            }
+                        },
+                        {
+                             onError()
+                        }
+                )
     }
 
-    fun criarUsuario(usuario: Usuario, onSucess: (usuario: Usuario) -> Unit, onError: () -> Unit) {
-        autenticacaoAPI.criarUsuario(usuario).subscribeOn(Schedulers.io())
+    fun criarUsuario(
+            usuario: UsuarioWrapper,
+            onSucess: (usuario: Usuario) -> Unit,
+            onError: () -> Unit
+    ) {
+
+        autenticacaoAPI.criarUsuario(usuario)
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ response ->
-                    val usuario = response.data
-                    usuario?.let {
-                        onSucess(it)
-                    }
-                }, {
-                    onError
-                })
+                .subscribe(
+                        { response ->
+
+                            val usuario = response.data
+                            usuario?.let {
+                                onSucess(it)
+                            }
+                },
+                        {
+                            onError
+                        }
+                )
     }
 
-    fun sair(usuario: Usuario, onSuccess:() -> Unit , onError: () -> Unit){
-        autenticacaoAPI.sair(usuario.uid, usuario.client, usuario.accessToken )
+    fun sair(
+            usuario: Usuario,
+            onSuccess:() -> Unit,
+            onError: () -> Unit
+    ) {
+        autenticacaoAPI.sair(usuario.uid, usuario.client, usuario.accessToken)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({

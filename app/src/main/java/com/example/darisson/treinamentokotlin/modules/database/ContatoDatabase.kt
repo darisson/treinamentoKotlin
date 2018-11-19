@@ -23,24 +23,22 @@ object ContatoDatabase {
         }
     }
 
-    fun salvarContato(contato: Contato, onSuccess: () -> Unit) {
+    fun salvarContato(contato: Contato) {
 
         Realm.getDefaultInstance().use { realm ->
             realm.beginTransaction()
-            realm.copyToRealm(contato)
+            realm.copyToRealmOrUpdate(contato)
             realm.commitTransaction()
-            onSuccess()
         }
     }
 
-    fun salvarContatos(contatos: List<Contato>, onSuccess: () -> Unit) {
+    fun salvarContatos(contatos: List<Contato>) {
 
         apagarContatos()
         Realm.getDefaultInstance().use { realm ->
             realm.beginTransaction()
-            realm.copyToRealm(contatos)
+            realm.copyToRealmOrUpdate(contatos)
             realm.commitTransaction()
-            onSuccess()
         }
     }
 
@@ -53,15 +51,15 @@ object ContatoDatabase {
         }
     }
 
-    fun editarContato(novoContato: Contato, onSuccess: () -> Unit) {
-
-        Realm.getDefaultInstance().use { realm ->
-            realm.beginTransaction()
-            realm.copyToRealmOrUpdate(novoContato)
-            realm.commitTransaction()
-            onSuccess()
-        }
-    }
+//    fun editarContato(novoContato: Contato, onSuccess: () -> Unit) {
+//
+//        Realm.getDefaultInstance().use { realm ->
+//            realm.beginTransaction()
+//            realm.copyToRealmOrUpdate(novoContato)
+//            realm.commitTransaction()
+//            onSuccess()
+//        }
+//    }
 
     fun getContatos(): List<Contato> {
 

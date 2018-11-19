@@ -5,33 +5,29 @@ import io.realm.Realm
 
 object AutenticacaoDatabase {
 
-    fun salvaUsuario(usuario: Usuario, onSuccess:() -> Unit){
+    fun salvaUsuario(usuario: Usuario) {
 
         Realm.getDefaultInstance().use { realm ->
             realm.beginTransaction()
             realm.copyToRealm(usuario)
             realm.commitTransaction()
-            onSuccess()
         }
     }
 
-    fun limparBanco(){
+    fun limparBanco() {
+
         Realm.getDefaultInstance().use { realm ->
             realm.beginTransaction()
             realm.deleteAll()
             realm.commitTransaction()
-
         }
     }
 
     fun getUsuario(): Usuario? {
-        Realm.getDefaultInstance().use { realm ->
-            val usuario: Usuario? = realm.where(Usuario::class.java).findFirst()
-
-            usuario?.let {
-                return realm.copyFromRealm(usuario)
-            }
-            return null
+        return Realm.getDefaultInstance().use { realm ->
+            realm.where(Usuario::class.java)
+                    .findFirst()
+                    ?.let { realm.copyFromRealm(it) }
         }
     }
 }

@@ -9,7 +9,7 @@ open class Usuario : RealmObject(), Serializable {
 
     @PrimaryKey
     @SerializedName("id")
-    var id: Int? = 0
+    var id: Int = 0
 
     @SerializedName("email")
     var email: String? = ""
@@ -21,12 +21,12 @@ open class Usuario : RealmObject(), Serializable {
     var password_confirmation: String? = ""
 
     var provider: String? = ""
-    var uid: String? = ""
+    var uid: String = ""
     var allow_password_change: Boolean? = false
     var name: String? = ""
     var nickname: String? = ""
     var image: Int? = 0
-    var client: String? = ""
-    var accessToken: String? = ""
+    var client: String = ""
+    var accessToken: String = ""
 
 }
